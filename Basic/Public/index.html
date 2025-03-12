@@ -7,25 +7,49 @@
 </head>
 <body>
     <h1>chatting</h1>
+    <div id="userDetails">
+        <input type="text" id="username" placeholder="Enter user name" required>
+        <button id="setUserButton">Set Name</button>
+    </div>
 
-    <input type="text" id="messageBox" placeholder="Enter any message">
+    <br><br>
+    <input type="text" id="messageBox" placeholder="Enter any message" required>
     <button id="sendMessageButton">Send</button>
 
     <div id="AllMessages"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+        const userDetails = document.getElementById("userDetails");
+        const username = document.getElementById("username");
+        const setUserButton = document.getElementById("setUserButton");
         const messageBox = document.getElementById("messageBox");
         const sendMessageButton = document.getElementById("sendMessageButton");
         const AllMessages = document.getElementById("AllMessages");
 
-        //Receive message from server to frontend
-        socket.on("message-to-all",(message)=>{
-            // console.log(message);
-            const p = document.createElement("p");
-            p.innerText = message;
+        //Send username to socketIO server
+        setUserButton.addEventListener("click",()=>{
+            const userName = username.value;
+            if(userName){
+                socket.emit("setUserName",userName);
+                username.value = "";
+                
+                username.style.display = "none";
+                setUserButton.style.display = "none";
 
-            AllMessages.appendChild(p);
+                const h2 = document.createElement("h2");
+                h2.innerText = userName;
+                userDetails.appendChild(h2);
+            }
+        })
+
+        //Receive message from server to frontend
+        socket.on("message-to-all",(data)=>{
+            // console.log(data.user," sent ",data.text);
+            const ul = document.createElement("ul");
+            ul.innerHTML = `<li>${data.user} ---> ${data.text}</li>`;
+
+            AllMessages.appendChild(ul);
 
         })
 
@@ -34,7 +58,10 @@
             // console.log(message);
 
             //Sending message from frontend to server 
-            socket.emit("user-message",message);
+            if(message){
+                socket.emit("user-message",message);
+                messageBox.value = "";
+            }
         })
     </script>
 </body>
