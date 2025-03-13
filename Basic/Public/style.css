@@ -1,0 +1,51 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    /* background-color: red; */
+}
+#userDetails{
+    /* border: 2px solid rgb(255, 255, 255); */
+    height: 13vh;
+}
+#userNameToggle{
+    /* border: 2px solid rgb(255, 255, 255); */
+}
+#userNameClick{
+    text-decoration: underline;
+    cursor: pointer;
+    
+}
+#setUserToggle{
+    display: none;
+}
+#AllMessages{
+    border: 2px solid rgb(255, 255, 255);
+    height: 23vh;
+    width: 75vw;
+    margin: 3rem 0rem;
+    padding: 1rem;
+    overflow-y: auto;
+    overflow-x: auto;
+    /* display: flex;
+    flex-direction: column;
+    position: relative; */
+}
+
+#sendMessage{
+    /* border: 2px solid yellow; */
+    display: block;
+    text-align: right;
+    
+}
+#receiveMessage{
+    display: block;
+    /* border: 2px solid green; */
+    text-align: left;
+}

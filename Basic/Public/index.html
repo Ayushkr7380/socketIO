@@ -4,52 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BasicChat</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>chatting</h1>
-    <div id="userDetails">
-        <input type="text" id="username" placeholder="Enter user name" required>
-        <button id="setUserButton">Set Name</button>
+    <div id="chatContainer">
+        <div id="heading">
+            <h1>Chat App</h1>
+        </div>
+
+        <div id="userDetails">
+            <p id="userNameToggle"><span id="userNameClick">Click here</span> to fill your name or start chat anonymously</p>
+            <div id="setUserToggle">
+                <input type="text" id="username" placeholder="Enter user name" required>
+                <button id="setUserButton">Set Name</button>
+            </div>
+        </div>
+        <div id="AllMessages"></div>
+
+        
+        <input type="text" id="messageBox" placeholder="Enter any message" required>
+        <button id="sendMessageButton">Send</button>
+    
     </div>
-
-    <br><br>
-    <input type="text" id="messageBox" placeholder="Enter any message" required>
-    <button id="sendMessageButton">Send</button>
-
-    <div id="AllMessages"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         const userDetails = document.getElementById("userDetails");
         const username = document.getElementById("username");
+        const userNameClick = document.getElementById("userNameClick");
+        const setUserToggle = document.getElementById("setUserToggle");
         const setUserButton = document.getElementById("setUserButton");
         const messageBox = document.getElementById("messageBox");
         const sendMessageButton = document.getElementById("sendMessageButton");
         const AllMessages = document.getElementById("AllMessages");
 
+        let i = 0;
+        userNameClick.addEventListener("click",()=>{
+            if(i == 0){
+                setUserToggle.style.display = "block";
+                userNameToggle.style.display = "none";
+                i = 1;
+            }
+            else{
+                userNameToggle.style.display = "none";
+                setUserToggle.style.display = "block";
+                i = 0;
+            }
+
+        });
         //Send username to socketIO server
         setUserButton.addEventListener("click",()=>{
             const userName = username.value;
             if(userName){
                 socket.emit("setUserName",userName);
-                username.value = "";
                 
-                username.style.display = "none";
-                setUserButton.style.display = "none";
+                setUserToggle.style.display = "none";
 
                 const h2 = document.createElement("h2");
-                h2.innerText = userName;
+                h2.innerText = `Welcome ${userName}`;
                 userDetails.appendChild(h2);
             }
         })
 
         //Receive message from server to frontend
         socket.on("message-to-all",(data)=>{
+            const div = document.createElement("div");
             // console.log(data.user," sent ",data.text);
-            const ul = document.createElement("ul");
-            ul.innerHTML = `<li>${data.user} ---> ${data.text}</li>`;
+            // div.classList.add("messageBody");
 
-            AllMessages.appendChild(ul);
+            // // div.style.display = "contents";
+            // div.style.position = "absolute";
+            // div.style.bottom = "0px";
+            if(data.user == username.value){
+                console.log("yes its me");
+                div.innerHTML = `<span id="sendMessage">${data.user} ---> ${data.text}</span>`;
+            }
+            else{
+                console.log("empty ",username.value)
+                div.innerHTML = `<span id="receiveMessage">${data.user} ---> ${data.text}</span>`;
+            }
+
+            AllMessages.appendChild(div);
 
         })
 
