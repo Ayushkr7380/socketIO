@@ -8,7 +8,9 @@ const App = () => {
   useEffect(()=>{
     socket.on("connect",()=>{
       console.log('Connected',socket.id);
-    })
+    });
+
+    socket.emit("message","hello");
   },[])
 
   return (
