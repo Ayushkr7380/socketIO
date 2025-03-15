@@ -16,6 +16,8 @@ const initializeSocket = (server)=>{
         //Receive message from client   
         socket.on("message",(message)=>{
             console.log("Message is ",message);
+
+            io.emit("message-to-all",message);
         });
     })
 
