@@ -7,7 +7,7 @@ const App = () => {
   ,[]);
 
 
-  const [messageFromServer , setMessageFromServer] = useState("");
+  const [messageFromServer , setMessageFromServer] = useState([]);
   const [inputMessage,setInputMessage] = useState("");
 
   useEffect(()=>{
@@ -18,7 +18,7 @@ const App = () => {
     //socket.emit("message","kya haal hai");
     
     socket.on("message-to-all",(data)=>{
-      setMessageFromServer(data);
+      setMessageFromServer((prev)=>[...prev,data]);
     });
 
     return ()=>{
@@ -37,6 +37,7 @@ const App = () => {
     }
   }
 
+  console.log("----",messageFromServer);
   return (
     <>
         <div>
@@ -48,7 +49,10 @@ const App = () => {
               />
               <button onClick={handleSubmit} >Send Message</button>
             </div>
-             {messageFromServer && <p>{messageFromServer}</p>}
+             {
+             messageFromServer && messageFromServer.map((msg,idx)=>(
+                <p key={idx}>{msg}</p>
+             ))}
           
         </div>
     </>
