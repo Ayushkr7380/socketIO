@@ -9,10 +9,12 @@ const App = () => {
 
   const [messageFromServer , setMessageFromServer] = useState([]);
   const [inputMessage,setInputMessage] = useState("");
+  const  [socketId,setSocketId] = useState('');
 
   useEffect(()=>{
     socket.on("connect",()=>{
       console.log('Connected',socket.id);
+      setSocketId(socket.id);
     });
 
     //socket.emit("message","kya haal hai");
@@ -41,6 +43,7 @@ const App = () => {
   return (
     <>
         <div>
+          <h4>Your socket id is <span style={{backgroundColor:'black',color:'white'}}>{socketId}</span></h4>
             <div>
               <input 
                 type="text"
