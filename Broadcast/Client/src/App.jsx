@@ -22,9 +22,9 @@ const App = () => {
       console.log(`${id} joined the chat.`);
     });
 
-    socket.on("message-to-all",({inputMessage})=>{
+    socket.on("message-to-all",({socketId,inputMessage})=>{
     
-      setMessageFromServer((prev)=>[...prev,inputMessage]);
+      setMessageFromServer((prev)=>[...prev,{socketId,inputMessage}]);
     });
 
     return ()=>{
@@ -59,10 +59,11 @@ const App = () => {
               />
               <button onClick={handleSubmit} >Send Message</button>
             </div>
-             {
-             messageFromServer && messageFromServer.map((msg,idx)=>(
-                <p key={idx}>{msg}</p>
-             ))}
+            {messageFromServer.map((msg, idx) => (
+            <p key={idx}>
+              <strong>{msg.socketId}:</strong> {msg.inputMessage}
+            </p>
+            ))}
           
         </div>
     </>
