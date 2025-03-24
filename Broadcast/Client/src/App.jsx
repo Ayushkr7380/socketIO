@@ -15,18 +15,22 @@ const App = () => {
     socket.on("connect",()=>{
       console.log('Connected',socket.id);
       setSocketId(socket.id);
+      socket.emit("userId",socket.id);
+    });
+    
+    socket.on("userId",(id)=>{
+      console.log(`${id} joined the chat.`);
     });
 
-    //socket.emit("message","kya haal hai");
+    socket.on("message-to-all",({inputMessage})=>{
     
-    socket.on("message-to-all",(data)=>{
-      setMessageFromServer((prev)=>[...prev,data]);
+      setMessageFromServer((prev)=>[...prev,inputMessage]);
     });
 
     return ()=>{
       socket.disconnect();
     }
-  },[])
+  },[]);
 
   const inputHandleChange =(e)=>{
     setInputMessage(e.target.value);
@@ -34,7 +38,10 @@ const App = () => {
 
   const handleSubmit =()=>{
     if(socket && inputMessage){
-      socket.emit("message",inputMessage);
+      socket.emit("message",{
+        socketId,
+        inputMessage
+      });
       setInputMessage("");
     }
   }
