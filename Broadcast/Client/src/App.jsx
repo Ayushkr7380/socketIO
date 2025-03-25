@@ -2,14 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { io } from 'socket.io-client';
 
 const App = () => {
-  const socket = useMemo(()=> 
-    io("http://localhost:8000/")
-  ,[]);
-
+  const socket = useMemo(()=>io("http://localhost:8000/"),[]);
 
   const [messageFromServer , setMessageFromServer] = useState([]);
   const [inputMessage,setInputMessage] = useState("");
   const  [socketId,setSocketId] = useState('');
+  const [joinedUser,setJoinedUser] = useState([]);
 
   useEffect(()=>{
     socket.on("connect",()=>{
@@ -20,10 +18,10 @@ const App = () => {
     
     socket.on("userId",(id)=>{
       console.log(`${id} joined the chat.`);
+      setJoinedUser((prev)=>[...prev,id]);
     });
 
-    socket.on("message-to-all",({socketId,inputMessage})=>{
-    
+    socket.on("message-to-all",({socketId,inputMessage})=>{    
       setMessageFromServer((prev)=>[...prev,{socketId,inputMessage}]);
     });
 
@@ -58,6 +56,15 @@ const App = () => {
                 value={inputMessage}
               />
               <button onClick={handleSubmit} >Send Message</button>
+            </div>
+            <div>
+            {
+              joinedUser.map((user,idx)=>(
+                <h4 key={idx}>
+                    {user} Joined the chat
+                </h4>
+              ))
+            }
             </div>
             {messageFromServer.map((msg, idx) => (
             <p key={idx}>
